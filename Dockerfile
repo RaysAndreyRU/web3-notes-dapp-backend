@@ -22,4 +22,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends tini openssl ca
 USER node
 ENTRYPOINT ["tini", "--"]
 
-CMD npx prisma migrate deploy && node dist/main.js
+CMD npx prisma generate && npx prisma migrate deploy && node dist/main.js
