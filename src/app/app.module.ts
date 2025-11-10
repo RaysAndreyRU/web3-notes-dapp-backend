@@ -5,7 +5,9 @@ import { PrismaModule, PrismaServiceOptions } from 'nestjs-prisma';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {HealthModule} from "./utils/health/health.module";
+import {HealthModule} from "../utils/health/health.module";
+import {NotesModule} from "../notes/notes.module";
+import {UsersModule} from "../user/user.module";
 
 @Module({
     imports: [
@@ -40,8 +42,9 @@ import {HealthModule} from "./utils/health/health.module";
         }),
 
         EventEmitterModule.forRoot(),
-
+        NotesModule,
         HealthModule,
+        UsersModule
     ],
     controllers: [AppController],
     providers: [AppService],

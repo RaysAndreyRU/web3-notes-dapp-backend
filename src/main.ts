@@ -12,7 +12,7 @@ import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { FormatInterceptor } from './utils/common/interceptors/format.interceptor';
 import { StripNullInterceptor } from './utils/common/interceptors/strip-null.interceptor';
 import './utils/common/array';
-import {AppModule} from "./app.module";
+import {AppModule} from "./app/app.module";
 import {findErrorConstraints} from "./utils/common/errors";
 
 async function bootstrap() {

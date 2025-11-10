@@ -1,9 +1,12 @@
 import { Controller, Get } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { AppService } from './app.service'
 
 @Controller()
 @ApiTags('Common')
 export class AppController {
+    constructor(private readonly appService: AppService) {}
+
     @Get()
     @ApiOperation({
         summary: 'Root endpoint',
@@ -20,11 +23,7 @@ export class AppController {
             },
         },
     })
-    getRoot(): Record<string, string> {
-        return {
-            name: 'Web3 Notes DApp Backend',
-            version: '1.0.0',
-            status: 'running',
-        }
+    getRoot() {
+        return this.appService.getRootInfo()
     }
 }
