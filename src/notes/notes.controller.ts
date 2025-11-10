@@ -7,7 +7,6 @@ import {
     ParseIntPipe,
     Post,
     Put,
-    UseGuards,
 } from '@nestjs/common'
 import {
     ApiBearerAuth,
@@ -20,16 +19,15 @@ import { NotesService } from './notes.service'
 import { CreateNoteDto } from './dto/create-note.dto'
 import { UpdateNoteDto } from './dto/update-note.dto'
 import { NoteDto } from './dto/note.dto'
-import { LumiaSessionGuard } from '../auth/lumia-session.guard'
-import { User, CurrentUser } from '../auth/current-user'
+import { User } from "src/utils/common/ decorators/user.decorator"
+import {UserDto} from "../auth/user.dto";
+
 
 @ApiTags('Notes')
 @ApiBearerAuth()
-@UseGuards(LumiaSessionGuard)
 @Controller('notes')
 export class NotesController {
     constructor(private readonly notesService: NotesService) {}
-
 
     @Get()
     @ApiOperation({
@@ -37,7 +35,7 @@ export class NotesController {
         description: 'Returns all notes created by the authenticated Lumia Passport user.',
     })
     @ApiOkResponse({ type: [NoteDto] })
-    async getAll(@User() user: CurrentUser): Promise<NoteDto[]> {
+    async getAll(@User() user: UserDto): Promise<NoteDto[]> {
         return this.notesService.getAll(user.walletAddress)
     }
 
@@ -50,7 +48,7 @@ export class NotesController {
     @ApiOkResponse({ type: NoteDto })
     async getOne(
         @Param('id', ParseIntPipe) id: number,
-        @User() user: CurrentUser,
+        @User() user: UserDto,
     ): Promise<NoteDto> {
         return this.notesService.getById(user.walletAddress, id)
     }
@@ -64,7 +62,7 @@ export class NotesController {
     @ApiResponse({ status: 201, type: NoteDto })
     async create(
         @Body() dto: CreateNoteDto,
-        @User() user: CurrentUser,
+        @User() user: UserDto,
     ): Promise<NoteDto> {
         return this.notesService.create(user.walletAddress, dto)
     }
@@ -78,7 +76,7 @@ export class NotesController {
     async update(
         @Param('id', ParseIntPipe) id: number,
         @Body() dto: UpdateNoteDto,
-        @User() user: CurrentUser,
+        @User() user: UserDto,
     ): Promise<NoteDto> {
         return this.notesService.update(user.walletAddress, id, dto)
     }
@@ -91,7 +89,7 @@ export class NotesController {
     @ApiOkResponse({ schema: { example: { success: true } } })
     async remove(
         @Param('id', ParseIntPipe) id: number,
-        @User() user: CurrentUser,
+        @User() user: UserDto,
     ): Promise<{ success: boolean }> {
         await this.notesService.delete(user.walletAddress, id)
         return { success: true }

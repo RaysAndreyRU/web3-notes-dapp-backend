@@ -7,7 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {HealthModule} from "../utils/health/health.module";
 import {NotesModule} from "../notes/notes.module";
-import {UsersModule} from "../user/user.module";
+import {AuthModule} from "../auth/auth.module";
 
 @Module({
     imports: [
@@ -44,7 +44,7 @@ import {UsersModule} from "../user/user.module";
         EventEmitterModule.forRoot(),
         NotesModule,
         HealthModule,
-        UsersModule
+        AuthModule
     ],
     controllers: [AppController],
     providers: [AppService],
