@@ -7,7 +7,6 @@ FROM node:lts AS build
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
-RUN npm run prisma:generate
 RUN npm run build
 
 FROM node:lts AS release
@@ -16,8 +15,6 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
 COPY package*.json ./
 COPY prisma ./prisma
-
-RUN npx prisma generate
 
 RUN apt-get update && apt-get install -y --no-install-recommends tini openssl ca-certificates \
   && rm -rf /var/lib/apt/lists/*
