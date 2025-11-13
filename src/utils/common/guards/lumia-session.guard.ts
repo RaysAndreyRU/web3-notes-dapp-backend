@@ -33,7 +33,10 @@ export class LumiaSessionGuard implements CanActivate {
         const user = await this.prisma.user.upsert({
             where: { walletAddress },
             update: {},
-            create: { walletAddress },
+            create: {
+                id: verification.userId,
+                walletAddress,
+            },
         })
 
         req.user = {

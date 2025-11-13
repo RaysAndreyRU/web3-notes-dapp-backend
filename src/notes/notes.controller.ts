@@ -6,7 +6,7 @@ import {
     Param,
     ParseIntPipe,
     Post,
-    Put,
+    Put, UseGuards,
 } from '@nestjs/common'
 import {
     ApiBearerAuth,
@@ -21,11 +21,13 @@ import { UpdateNoteDto } from './dto/update-note.dto'
 import { NoteDto } from './dto/note.dto'
 import { User } from "src/utils/common/ decorators/user.decorator"
 import {UserDto} from "../auth/user.dto";
+import {LumiaSessionGuard} from "../utils/common/guards/lumia-session.guard";
 
 
 @ApiTags('Notes')
 @ApiBearerAuth()
-@Controller('notes')
+@Controller('api/notes')
+@UseGuards(LumiaSessionGuard)
 export class NotesController {
     constructor(private readonly notesService: NotesService) {}
 

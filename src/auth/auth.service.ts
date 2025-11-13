@@ -1,21 +1,21 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { PrismaService } from 'nestjs-prisma'
 import { verifyLumiaToken } from '../utils/lumia'
-import {PrismaService} from "nestjs-prisma";
-import {UserDto} from "./user.dto";
-import {mapResponse} from "../utils/common/map.response";
-
+import { UserDto } from './user.dto'
+import { AuthDataDto } from './auth-data.dto'
+import { mapResponse } from '../utils/common/map.response'
 
 @Injectable()
 export class AuthService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async verifySession(token: string): Promise<UserDto> {
-        if (!token) {
-            throw new UnauthorizedException('Missing session token')
+    async verifySession(authData: AuthDataDto): Promise<UserDto> {
+        if (!authData?.accessToken) {
+            throw new UnauthorizedException('Missing Lumia session token')
         }
 
         try {
-            const verification = await verifyLumiaToken(token)
+            const verification = await verifyLumiaToken(authData)
 
             if (!verification?.valid || !verification.userId) {
                 throw new UnauthorizedException('Invalid or expired Lumia token')
@@ -24,9 +24,14 @@ export class AuthService {
             const walletAddress = verification.userId.toLowerCase()
 
             const user = await this.prisma.user.upsert({
-                where: { walletAddress },
-                update: {},
-                create: { walletAddress },
+                where: { id: authData.userId },
+                update: {
+                    walletAddress: authData.walletAddress?.toLowerCase() ?? null,
+                },
+                create: {
+                    id: authData.userId,
+                    walletAddress: authData.walletAddress?.toLowerCase() ?? null,
+                },
             })
 
             return mapResponse(UserDto, user)
