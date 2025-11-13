@@ -6,7 +6,8 @@ import {
     Param,
     ParseIntPipe,
     Post,
-    Put, UseGuards,
+    Put,
+    UseGuards,
 } from '@nestjs/common'
 import {
     ApiBearerAuth,
@@ -19,10 +20,9 @@ import { NotesService } from './notes.service'
 import { CreateNoteDto } from './dto/create-note.dto'
 import { UpdateNoteDto } from './dto/update-note.dto'
 import { NoteDto } from './dto/note.dto'
-import { User } from "src/utils/common/ decorators/user.decorator"
-import {UserDto} from "../auth/user.dto";
-import {LumiaSessionGuard} from "../utils/common/guards/lumia-session.guard";
-
+import { UserDto } from '../auth/user.dto'
+import { LumiaSessionGuard } from '../utils/common/guards/lumia-session.guard'
+import {User} from "../utils/common/ decorators/user.decorator";
 
 @ApiTags('Notes')
 @ApiBearerAuth()
@@ -38,9 +38,8 @@ export class NotesController {
     })
     @ApiOkResponse({ type: [NoteDto] })
     async getAll(@User() user: UserDto): Promise<NoteDto[]> {
-        return this.notesService.getAll(user.walletAddress)
+        return this.notesService.getAll(user.id)
     }
-
 
     @Get(':id')
     @ApiOperation({
@@ -52,9 +51,8 @@ export class NotesController {
         @Param('id', ParseIntPipe) id: number,
         @User() user: UserDto,
     ): Promise<NoteDto> {
-        return this.notesService.getById(user.walletAddress, id)
+        return this.notesService.getById(user.id, id)
     }
-
 
     @Post()
     @ApiOperation({
@@ -66,7 +64,7 @@ export class NotesController {
         @Body() dto: CreateNoteDto,
         @User() user: UserDto,
     ): Promise<NoteDto> {
-        return this.notesService.create(user.walletAddress, dto)
+        return this.notesService.create(user.id, dto)
     }
 
     @Put(':id')
@@ -80,7 +78,7 @@ export class NotesController {
         @Body() dto: UpdateNoteDto,
         @User() user: UserDto,
     ): Promise<NoteDto> {
-        return this.notesService.update(user.walletAddress, id, dto)
+        return this.notesService.update(user.id, id, dto)
     }
 
     @Delete(':id')
@@ -93,7 +91,7 @@ export class NotesController {
         @Param('id', ParseIntPipe) id: number,
         @User() user: UserDto,
     ): Promise<{ success: boolean }> {
-        await this.notesService.delete(user.walletAddress, id)
+        await this.notesService.delete(user.id, id)
         return { success: true }
     }
 }

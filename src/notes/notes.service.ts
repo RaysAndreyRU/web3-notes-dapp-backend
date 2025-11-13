@@ -9,36 +9,31 @@ import { mapResponse } from '../utils/common/map.response'
 export class NotesService {
     constructor(private readonly repo: NotesRepository) {}
 
-
-    async getAll(walletAddress: string): Promise<NoteDto[]> {
-        const notes = await this.repo.findAllByWallet(walletAddress)
+    async getAll(userId: string): Promise<NoteDto[]> {
+        const notes = await this.repo.findAllByUser(userId)
         return notes.map((note) => mapResponse(NoteDto, note))
     }
 
-
-    async getById(walletAddress: string, id: number): Promise<NoteDto> {
-        const note = await this.repo.findOneByIdAndWallet(id, walletAddress)
+    async getById(userId: string, id: number): Promise<NoteDto> {
+        const note = await this.repo.findOneByIdAndUser(id, userId)
         if (!note) throw new NotFoundException('Note not found')
         return mapResponse(NoteDto, note)
     }
 
-
-    async create(walletAddress: string, dto: CreateNoteDto): Promise<NoteDto> {
-        const note = await this.repo.createByWallet(walletAddress, dto)
+    async create(userId: string, dto: CreateNoteDto): Promise<NoteDto> {
+        const note = await this.repo.createByUser(userId, dto)
         return mapResponse(NoteDto, note)
     }
 
-
-    async update(walletAddress: string, id: number, dto: UpdateNoteDto): Promise<NoteDto> {
-        const existing = await this.repo.findOneByIdAndWallet(id, walletAddress)
+    async update(userId: string, id: number, dto: UpdateNoteDto): Promise<NoteDto> {
+        const existing = await this.repo.findOneByIdAndUser(id, userId)
         if (!existing) throw new NotFoundException('Note not found')
         const updated = await this.repo.update(id, dto)
         return mapResponse(NoteDto, updated)
     }
 
-
-    async delete(walletAddress: string, id: number): Promise<void> {
-        const existing = await this.repo.findOneByIdAndWallet(id, walletAddress)
+    async delete(userId: string, id: number): Promise<void> {
+        const existing = await this.repo.findOneByIdAndUser(id, userId)
         if (!existing) throw new NotFoundException('Note not found')
         await this.repo.delete(id)
     }

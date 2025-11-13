@@ -14,27 +14,26 @@ export class NotesRepository extends BaseRepository<
         super(prisma as any, 'note')
     }
 
-
-    findAllByWallet(walletAddress: string) {
+    findAllByUser(userId: string) {
         return this.repo.findMany({
-            where: { user: { walletAddress } },
+            where: { userId },
             orderBy: { createdAt: 'desc' },
         })
     }
 
-    findOneByIdAndWallet(id: number, walletAddress: string) {
+    findOneByIdAndUser(id: number, userId: string) {
         return this.repo.findFirst({
-            where: { id, user: { walletAddress } },
+            where: { id, userId },
         })
     }
 
-    async createByWallet(walletAddress: string, dto: CreateNoteDto) {
+    async createByUser(userId: string, dto: CreateNoteDto) {
         return this.repo.create({
             data: {
                 title: dto.title,
                 content: dto.content,
                 user: {
-                    connect: { walletAddress },
+                    connect: { id: userId },
                 },
             },
         })
