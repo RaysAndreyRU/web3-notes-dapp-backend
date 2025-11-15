@@ -8,7 +8,7 @@ import {
     IsOptional,
     ArrayNotEmpty,
 } from 'class-validator'
-import { BaseDto } from '../utils/common/base-entity'
+import { BaseDto } from '../../utils/common/base-entity'
 
 export class AuthDataDto extends BaseDto<AuthDataDto> {
     @ApiProperty({

@@ -14,11 +14,17 @@ export class NotesRepository extends BaseRepository<
         super(prisma as any, 'note')
     }
 
-    findAllByUser(userId: string) {
-        return this.repo.findMany({
-            where: { userId },
-            orderBy: { createdAt: 'desc' },
-        })
+    findAllByUser(
+        userId: string,
+        skip: number,
+        take: number,
+    ): Promise<{ data: Note[]; total: number }> {
+        return this.findPaged(
+            skip,
+            take,
+            { userId },
+            { createdAt: 'desc' },
+        )
     }
 
     findOneByIdAndUser(id: number, userId: string) {

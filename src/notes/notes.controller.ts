@@ -1,18 +1,18 @@
 import {
     Body,
-    Controller,
+    Controller, DefaultValuePipe,
     Delete,
     Get,
     Param,
     ParseIntPipe,
     Post,
-    Put,
+    Put, Query,
     UseGuards,
 } from '@nestjs/common'
 import {
     ApiBearerAuth,
     ApiOkResponse,
-    ApiOperation,
+    ApiOperation, ApiQuery,
     ApiResponse,
     ApiTags,
 } from '@nestjs/swagger'
@@ -20,25 +20,33 @@ import { NotesService } from './notes.service'
 import { CreateNoteDto } from './dto/create-note.dto'
 import { UpdateNoteDto } from './dto/update-note.dto'
 import { NoteDto } from './dto/note.dto'
-import { UserDto } from '../auth/user.dto'
-import { LumiaSessionGuard } from '../utils/common/guards/lumia-session.guard'
+import { UserDto } from '../auth/  dto/user.dto'
 import {User} from "../utils/common/ decorators/user.decorator";
+import {JwtSessionGuard} from "../utils/common/guards/lumia-session.guard";
+import {PagedNotesDto} from "./dto/paged-notes.dto";
 
 @ApiTags('Notes')
 @ApiBearerAuth()
 @Controller('api/notes')
-@UseGuards(LumiaSessionGuard)
+@UseGuards(JwtSessionGuard)
 export class NotesController {
     constructor(private readonly notesService: NotesService) {}
 
     @Get()
     @ApiOperation({
         summary: 'List notes of the current user',
-        description: 'Returns all notes created by the authenticated Lumia Passport user.',
+        description:
+            'Returns paginated notes created by the authenticated Lumia Passport user.',
     })
-    @ApiOkResponse({ type: [NoteDto] })
-    async getAll(@User() user: UserDto): Promise<NoteDto[]> {
-        return this.notesService.getAll(user.id)
+    @ApiQuery({ name: 'skip', required: false, type: Number, example: 0 })
+    @ApiQuery({ name: 'take', required: false, type: Number, example: 10 })
+    @ApiOkResponse({ type: PagedNotesDto })
+    async getAll(
+        @User() user: UserDto,
+        @Query('skip', new DefaultValuePipe(0), ParseIntPipe) skip: number,
+        @Query('take', new DefaultValuePipe(10), ParseIntPipe) take: number,
+    ): Promise<PagedNotesDto> {
+        return this.notesService.getAll(user.id, skip, take)
     }
 
     @Get(':id')

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Expose, Type } from 'class-transformer'
 import { IsString, IsDate } from 'class-validator'
-import { BaseDto } from '../utils/common/base-entity'
+import { BaseDto } from '../../utils/common/base-entity'
 
 export class UserDto extends BaseDto<UserDto> {
     @Expose()
@@ -16,13 +16,4 @@ export class UserDto extends BaseDto<UserDto> {
         description: 'User wallet address',
     })
     walletAddress: string
-
-    @Expose()
-    @IsDate()
-    @Type(() => Date)
-    @ApiProperty({
-        example: '2025-11-10T00:00:00.000Z',
-        description: 'Date when user was created',
-    })
-    createdAt: Date
 }

@@ -4,14 +4,25 @@ import { CreateNoteDto } from './dto/create-note.dto'
 import { UpdateNoteDto } from './dto/update-note.dto'
 import { NoteDto } from './dto/note.dto'
 import { mapResponse } from '../utils/common/map.response'
+import {PagedNotesDto} from "./dto/paged-notes.dto";
 
 @Injectable()
 export class NotesService {
     constructor(private readonly repo: NotesRepository) {}
 
-    async getAll(userId: string): Promise<NoteDto[]> {
-        const notes = await this.repo.findAllByUser(userId)
-        return notes.map((note) => mapResponse(NoteDto, note))
+    async getAll(
+        userId: string,
+        skip = 0,
+        take = 10,
+    ): Promise<PagedNotesDto> {
+        const { data, total } = await this.repo.findAllByUser(userId, skip, take)
+
+        return {
+            items: data.map((note) => mapResponse(NoteDto, note)),
+            total,
+            skip,
+            take,
+        }
     }
 
     async getById(userId: string, id: number): Promise<NoteDto> {
