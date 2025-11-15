@@ -51,6 +51,9 @@ cp .env.example .env
 # Run Prisma migrations
 npx prisma migrate dev
 
+# Run Prisma generate
+npx prisma generate
+
 # (Optional) Seed sample data
 npx prisma db seed
 ```
@@ -58,7 +61,7 @@ npx prisma db seed
 ##  Development
 ```bash
 # Start the dev server
-npm run start:dev
+npm  start:dev
 ```
 ##  Docker (optional)
 ```bash

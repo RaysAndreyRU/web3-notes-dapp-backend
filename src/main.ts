@@ -27,7 +27,6 @@ async function bootstrap() {
     app.useLogger(app.get(Logger));
     app.use(json(getBodyParserOptions(true, { limit: '5mb' })));
 
-    // Глобальные пайпы (валидация DTO)
     app.useGlobalPipes(
         new ValidationPipe({
             enableDebugMessages: true,
